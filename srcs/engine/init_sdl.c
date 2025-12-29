@@ -1,0 +1,112 @@
+#include "../../includes/header.h"
+#include <SDL2/SDL_pixels.h>
+#include <SDL2/SDL_rect.h>
+#include <SDL2/SDL_render.h>
+#include <SDL2/SDL_surface.h>
+#include <SDL2/SDL_timer.h>
+#include <unistd.h>
+
+char *tmp_ctnr[] = {"111111",
+                    "100001",
+                    "100001",
+                    "100001",
+                    "111111", NULL};
+int w_x = 1280;
+int w_y = 880;
+
+SDL_Colour orange = {255, 170, 40, 255};
+
+static bool create_window(t_data *t) {
+    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    {
+        ft_puterror("Failed to init SDL!");
+        return (false);
+    }
+    ft_putgood("Successfully init SDL!");
+    t->window = SDL_CreateWindow("SDL", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, w_x, w_y, SDL_WINDOW_SHOWN);
+    if (!t->window)
+    {
+        ft_puterror("Failed to create the SDL window!");
+        return (false);    
+    }
+    ft_putgood("Successfully created the SDL window!");
+    return (true);
+}
+
+static bool create_renderer(t_data *t) {
+    t->renderer = SDL_CreateRenderer(t->window, -1, SDL_RENDERER_ACCELERATED);
+    if (!t->renderer)
+    {
+        ft_puterror("Failed to create the SDL renderer!");
+        return (false);
+    }
+    ft_putgood("Successfully created the SDL renderer!");
+    return (true);
+}
+
+bool set_fontcolor(SDL_Colour colour, t_data *t) {
+    if (SDL_SetRenderDrawColor(t->renderer, colour.r, colour.g, colour.b, colour.a) < 0) {
+        ft_puterror("Failed to set the font color!");
+        return (false);
+    }
+    if (SDL_RenderClear(t->renderer) < 0) {
+        ft_puterror("Failed to clear renderer!");
+        return (false);
+    }
+    SDL_RenderPresent(t->renderer);
+    ft_putgood("Succesfully set font color!");
+    return (true);
+}
+
+static bool create_sprites(t_data *t) {
+    t->n_spr = _n_spr;
+    t->spr = malloc(sizeof(t_sprite) * (t->n_spr + 1));
+    if (!t->spr) {
+        ft_puterror("Failed to allocate spr struct");
+        return (false);
+    }
+    ft_putgood("Successfully allocated spr struct");
+    /*SDL_Rect dst = { w_x/2 - t->spr[0].srf->w/2, w_y/2 - t->spr[0].srf->h/2, t->spr[0].srf->w, t->spr[0].srf->h };
+    SDL_RenderCopy(t->renderer, t->spr[0].txr, NULL, &dst);
+    SDL_RenderPresent(t->renderer);
+
+    SDL_Delay(3000);
+    SDL_DestroyTexture(t->spr[0].txr);
+    SDL_FreeSurface(t->spr[0].srf);*/
+    return (true);
+}
+
+bool push_sprite_data(t_data *t, const char *path, int index) {
+    t->spr[index].id = index;
+    t->spr[index].path = path;
+    t->spr[index].srf = SDL_LoadBMP(path);
+    if (!t->spr[index].srf)
+        return (false);
+    t->spr[index].txr = SDL_CreateTextureFromSurface(t->renderer, t->spr[index].srf);
+    if (!t->spr[0].srf)
+        return (false);
+    return (true);
+}
+
+/*bool draw_grid() {
+    for (int i = 0; tmp_ctnr[i]; i++) {
+        for (int j = 0; j < strlen(tmp_ctnr[i]); j++) {
+            
+        }
+    }
+}*/
+
+bool start_sdl(t_data *t) {
+    t->window = NULL;
+    if (!create_window(t))
+        return (false);
+    t->renderer = NULL;
+    if (!create_renderer(t))
+        return (false);
+    if (!set_fontcolor(orange, t))
+        return (false);
+    if (!create_sprites(t))
+        return (false);
+    free_sdl(t);
+    return (true);
+}
