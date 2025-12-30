@@ -1,5 +1,4 @@
 #include "../includes/header.h"
-#include <SDL2/SDL_events.h>
 
 int main(int ac, char **av) {
     t_data data;
@@ -14,6 +13,15 @@ int main(int ac, char **av) {
         return (1);
     if (!start_sdl(t))
         return (1);
+
+    t->quit = SDL_FALSE;
+    while (!t->quit) {
+        SDL_WaitEvent(&t->event);
+        if (t->event.type == SDL_QUIT)
+            t->quit = SDL_TRUE;
+        handle_key_movement(t);
+    }
+    free_sdl(t);
     //https://zestedesavoir.com/tutoriels/1014/utiliser-la-sdl-en-langage-c/dessiner-dans-la-fenetre/
     // https://lodev.org/cgtutor/raycasting.html
     // https://lodev.org/cgtutor/raycasting2.html

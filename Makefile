@@ -6,6 +6,7 @@ SRCS	= srcs/main.c \
 		  srcs/parsing/p_av.c \
 		  srcs/engine/init_sdl.c \
 		  srcs/engine/free.c \
+		  srcs/engine/key_handler.c \
 
 OBJS	= $(SRCS:.c=.o)
 LIBFT 	= libft/libft.a

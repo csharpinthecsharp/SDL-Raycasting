@@ -1,16 +1,10 @@
 #include "../../includes/header.h"
-#include <SDL2/SDL_pixels.h>
-#include <SDL2/SDL_rect.h>
-#include <SDL2/SDL_render.h>
-#include <SDL2/SDL_surface.h>
-#include <SDL2/SDL_timer.h>
-#include <unistd.h>
 
-char *tmp_ctnr[] = {"111111",
-                    "100001",
-                    "100001",
-                    "100001",
-                    "111111", NULL};
+char *tmp_ctnr[] = {"11111111111",
+                    "10000000001",
+                    "100N0000001",
+                    "10000000001",
+                    "11111111111", NULL};
 int w_x = 1280;
 int w_y = 880;
 
@@ -88,13 +82,47 @@ bool push_sprite_data(t_data *t, const char *path, int index) {
     return (true);
 }
 
-/*bool draw_grid() {
+void draw_grid(t_data *t, bool update) {
+    int x = TILE_SIZE;
+    int y = TILE_SIZE;
+    if (!set_fontcolor(orange, t))
+        return ;
     for (int i = 0; tmp_ctnr[i]; i++) {
         for (int j = 0; j < strlen(tmp_ctnr[i]); j++) {
-            
+            if (tmp_ctnr[i][j] == '1') {
+                SDL_Rect dst = { x/2 - t->spr[1].srf->w/2, y/2 - t->spr[1].srf->h/2, t->spr[1].srf->w, t->spr[1].srf->h };
+                SDL_RenderCopy(t->renderer, t->spr[1].txr, NULL, &dst);
+                x += TILE_SIZE;
+            }
+            else if (tmp_ctnr[i][j] == '0') {
+                SDL_Rect dst = { x/2 - t->spr[0].srf->w/2, y/2 - t->spr[0].srf->h/2, t->spr[0].srf->w, t->spr[0].srf->h };
+                SDL_RenderCopy(t->renderer, t->spr[0].txr, NULL, &dst);
+                x += TILE_SIZE;
+            }
+            else if (tmp_ctnr[i][j] == 'N') {
+                if (update) {
+                    SDL_Rect dst = { x/2 - t->spr[0].srf->w/2, y/2 - t->spr[0].srf->h/2, t->spr[0].srf->w, t->spr[0].srf->h };
+                    SDL_RenderCopy(t->renderer, t->spr[0].txr, NULL, &dst);
+                    x += TILE_SIZE;
+                }
+                else {
+                    SDL_Rect dst = { x/2 - t->spr[2].srf->w/2, y/2 - t->spr[2].srf->h/2, t->spr[2].srf->w, t->spr[2].srf->h };
+                    SDL_RenderCopy(t->renderer, t->spr[2].txr, NULL, &dst);
+                    t->player->x = x;
+                    t->player->y = y;
+                    x += TILE_SIZE;
+                }
+            }
         }
+        x = TILE_SIZE;
+        y += TILE_SIZE;
     }
-}*/
+    if (update) {
+        SDL_Rect dst = { t->player->x/2 - t->spr[2].srf->w/2, t->player->y/2 - t->spr[2].srf->h/2, t->spr[2].srf->w, t->spr[2].srf->h };
+        SDL_RenderCopy(t->renderer, t->spr[2].txr, NULL, &dst);
+    }
+    SDL_RenderPresent(t->renderer);
+}
 
 bool start_sdl(t_data *t) {
     t->window = NULL;
@@ -103,10 +131,16 @@ bool start_sdl(t_data *t) {
     t->renderer = NULL;
     if (!create_renderer(t))
         return (false);
-    if (!set_fontcolor(orange, t))
-        return (false);
     if (!create_sprites(t))
         return (false);
-    free_sdl(t);
+    if (!set_fontcolor(orange, t))
+        return (false);
+    t->player = malloc(sizeof(t_player) * 1);
+
+    push_sprite_data(t, "wall_0.bmp", 0);
+    push_sprite_data(t, "wall_1.bmp", 1);
+    push_sprite_data(t, "player.bmp", 2);
+
+    draw_grid(t, false);
     return (true);
 }

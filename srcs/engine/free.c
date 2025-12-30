@@ -12,6 +12,10 @@ void free_sdl(t_data *t) {
         SDL_DestroyTexture(t->spr[0].txr);
     if (t->spr[0].srf)
         SDL_FreeSurface(t->spr[0].srf);
+    if (t->spr[1].txr)
+        SDL_DestroyTexture(t->spr[1].txr);
+    if (t->spr[1].srf)
+        SDL_FreeSurface(t->spr[1].srf);
     SDL_Quit();
     return ;
 }
