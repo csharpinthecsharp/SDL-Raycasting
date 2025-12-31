@@ -18,7 +18,7 @@
 #include <fcntl.h>
 #include <math.h>
 
-#define TILE_SIZE 64
+#define TILE_SIZE 16
 
 extern char *tmp_ctnr[];
 
@@ -53,7 +53,7 @@ typedef struct s_data {
     SDL_bool        quit;
 } t_data;
 
-void temp_draw_line(t_data *t);
+void draw_ray(t_data *t);
 bool is_a_valid_file(const char *path);
 bool start_sdl(t_data *t);
 void free_sdl(t_data *t);
