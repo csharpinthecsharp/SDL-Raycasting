@@ -16,6 +16,13 @@ int main(int ac, char **av) {
 
     t->quit = SDL_FALSE;
     while (!t->quit) {
+
+        SDL_Delay(10);
+        SDL_RenderClear(t->renderer);
+        draw_grid(t, true);
+        temp_draw_line(t);
+        SDL_RenderPresent(t->renderer);
+
         SDL_WaitEvent(&t->event);
         if (t->event.type == SDL_QUIT)
             t->quit = SDL_TRUE;

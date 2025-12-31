@@ -12,7 +12,7 @@ OBJS	= $(SRCS:.c=.o)
 LIBFT 	= libft/libft.a
 CFLAGS 	= $(shell pkg-config --cflags sdl2)
 LDFLAGS = $(shell pkg-config --libs sdl2)
-
+LDFLAGS += -lm
 all: $(NAME)
 
 $(LIBFT):

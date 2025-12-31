@@ -1,10 +1,13 @@
 #include "../../includes/header.h"
 
-char *tmp_ctnr[] = {"11111111111",
-                    "10000000001",
-                    "100N0000001",
-                    "10000000001",
-                    "11111111111", NULL};
+char *tmp_ctnr[] = {"111111111111111",
+                    "100000000000001",
+                    "100N00000000001",
+                    "100000000000001",
+                    "100000000000001",
+                    "100000000000001",
+                    "100N00000000001",
+                    "111111111111111", NULL};
 int w_x = 1280;
 int w_y = 880;
 
@@ -23,7 +26,6 @@ static bool create_window(t_data *t) {
         ft_puterror("Failed to create the SDL window!");
         return (false);    
     }
-    ft_putgood("Successfully created the SDL window!");
     return (true);
 }
 
@@ -34,7 +36,6 @@ static bool create_renderer(t_data *t) {
         ft_puterror("Failed to create the SDL renderer!");
         return (false);
     }
-    ft_putgood("Successfully created the SDL renderer!");
     return (true);
 }
 
@@ -48,7 +49,6 @@ bool set_fontcolor(SDL_Colour colour, t_data *t) {
         return (false);
     }
     SDL_RenderPresent(t->renderer);
-    ft_putgood("Succesfully set font color!");
     return (true);
 }
 
@@ -59,7 +59,6 @@ static bool create_sprites(t_data *t) {
         ft_puterror("Failed to allocate spr struct");
         return (false);
     }
-    ft_putgood("Successfully allocated spr struct");
     /*SDL_Rect dst = { w_x/2 - t->spr[0].srf->w/2, w_y/2 - t->spr[0].srf->h/2, t->spr[0].srf->w, t->spr[0].srf->h };
     SDL_RenderCopy(t->renderer, t->spr[0].txr, NULL, &dst);
     SDL_RenderPresent(t->renderer);
@@ -90,23 +89,23 @@ void draw_grid(t_data *t, bool update) {
     for (int i = 0; tmp_ctnr[i]; i++) {
         for (int j = 0; j < strlen(tmp_ctnr[i]); j++) {
             if (tmp_ctnr[i][j] == '1') {
-                SDL_Rect dst = { x/2 - t->spr[1].srf->w/2, y/2 - t->spr[1].srf->h/2, t->spr[1].srf->w, t->spr[1].srf->h };
+                SDL_Rect dst = { x - t->spr[1].srf->w/2, y - t->spr[1].srf->h/2, t->spr[1].srf->w, t->spr[1].srf->h };
                 SDL_RenderCopy(t->renderer, t->spr[1].txr, NULL, &dst);
                 x += TILE_SIZE;
             }
             else if (tmp_ctnr[i][j] == '0') {
-                SDL_Rect dst = { x/2 - t->spr[0].srf->w/2, y/2 - t->spr[0].srf->h/2, t->spr[0].srf->w, t->spr[0].srf->h };
+                SDL_Rect dst = { x - t->spr[0].srf->w/2, y - t->spr[0].srf->h/2, t->spr[0].srf->w, t->spr[0].srf->h };
                 SDL_RenderCopy(t->renderer, t->spr[0].txr, NULL, &dst);
                 x += TILE_SIZE;
             }
             else if (tmp_ctnr[i][j] == 'N') {
                 if (update) {
-                    SDL_Rect dst = { x/2 - t->spr[0].srf->w/2, y/2 - t->spr[0].srf->h/2, t->spr[0].srf->w, t->spr[0].srf->h };
+                    SDL_Rect dst = { x - t->spr[0].srf->w/2, y - t->spr[0].srf->h/2, t->spr[0].srf->w, t->spr[0].srf->h };
                     SDL_RenderCopy(t->renderer, t->spr[0].txr, NULL, &dst);
                     x += TILE_SIZE;
                 }
                 else {
-                    SDL_Rect dst = { x/2 - t->spr[2].srf->w/2, y/2 - t->spr[2].srf->h/2, t->spr[2].srf->w, t->spr[2].srf->h };
+                    SDL_Rect dst = { x - t->spr[2].srf->w/2, y - t->spr[2].srf->h/2, t->spr[2].srf->w, t->spr[2].srf->h };
                     SDL_RenderCopy(t->renderer, t->spr[2].txr, NULL, &dst);
                     t->player->x = x;
                     t->player->y = y;
@@ -118,7 +117,7 @@ void draw_grid(t_data *t, bool update) {
         y += TILE_SIZE;
     }
     if (update) {
-        SDL_Rect dst = { t->player->x/2 - t->spr[2].srf->w/2, t->player->y/2 - t->spr[2].srf->h/2, t->spr[2].srf->w, t->spr[2].srf->h };
+        SDL_Rect dst = { t->player->x - t->spr[2].srf->w/2, t->player->y - t->spr[2].srf->h/2, t->spr[2].srf->w, t->spr[2].srf->h };
         SDL_RenderCopy(t->renderer, t->spr[2].txr, NULL, &dst);
     }
     SDL_RenderPresent(t->renderer);
