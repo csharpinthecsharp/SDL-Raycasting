@@ -4,13 +4,11 @@ int main(int ac, char **av) {
     t_data data;
     t_data *t;
     t = &data;
-    if (ac != 2)
+    if (ac != 1)
     {
-        ft_puterror("Invalid selection!");
+        ft_puterror("./a!");
         return (1);
     }
-    if (!is_a_valid_file(av[1]))
-        return (1);
     if (!start_sdl(t))
         return (1);
 

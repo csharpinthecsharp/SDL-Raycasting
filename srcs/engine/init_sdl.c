@@ -46,7 +46,7 @@ static bool create_renderer(t_data *t) {
 }
 
 static bool create_sprites(t_data *t) {
-    t->n_spr = 3;
+    t->n_spr = 5;
     t->spr = malloc(sizeof(t_sprite) * (t->n_spr + 1));
     if (!t->spr) {
         ft_puterror("Failed to allocate spr struct");
@@ -92,6 +92,8 @@ bool start_sdl(t_data *t) {
     push_sprite_data(t, "wall_1.bmp", 1);
     push_sprite_data(t, "player.bmp", 2);
     push_sprite_data(t, "wall_ray.bmp", 3);
+    push_sprite_data(t, "weapon.bmp", 4);
+    push_sprite_data(t, "cursor.bmp", 5);
 
     draw_grid(t, false);
     return (true);
