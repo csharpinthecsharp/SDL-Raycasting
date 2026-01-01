@@ -21,12 +21,7 @@ int main(int ac, char **av) {
                 t->quit = SDL_TRUE;
         }
         handle_key_movement(t);
-
-        SDL_RenderClear(t->renderer);
-        draw_grid(t, true);
-        draw_ray(t);
-        SDL_RenderPresent(t->renderer);
-
+        update_loop(t);
         SDL_Delay(16);
     }
     free_sdl(t);

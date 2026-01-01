@@ -4,18 +4,20 @@ char *tmp_ctnr[] = {
     "111111111111111111111",
     "100000000000000000001",
     "100N00000000000000001",
-    "1000010000000011110001",
+    "100001000000001111001",
     "100000000000000000001",
-    "1000000111110011111001",
+    "100000011111001111101",
+    "100N00000000000000001",
+    "100N00000000000000001",
+    "100N00000000000000001",
+    "100N00000000000000001",
+    "100N00000000000000001",
+    "100N00000000000000001",
     "100N00000000000000001",
     "111111111111111111111",
     NULL
 };
 
-int w_x = 1280;
-int w_y = 880;
-
-SDL_Colour orange = {255, 170, 40, 255};
 
 static bool create_window(t_data *t) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -24,7 +26,7 @@ static bool create_window(t_data *t) {
         return (false);
     }
     ft_putgood("Successfully init SDL!");
-    t->window = SDL_CreateWindow("SDL", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, w_x, w_y, SDL_WINDOW_SHOWN);
+    t->window = SDL_CreateWindow("SDL", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, t->width, t->height, SDL_WINDOW_SHOWN);
     if (!t->window)
     {
         ft_puterror("Failed to create the SDL window!");
@@ -43,21 +45,8 @@ static bool create_renderer(t_data *t) {
     return (true);
 }
 
-bool set_fontcolor(SDL_Colour colour, t_data *t) {
-    if (SDL_SetRenderDrawColor(t->renderer, colour.r, colour.g, colour.b, colour.a) < 0) {
-        ft_puterror("Failed to set the font color!");
-        return (false);
-    }
-    if (SDL_RenderClear(t->renderer) < 0) {
-        ft_puterror("Failed to clear renderer!");
-        return (false);
-    }
-    SDL_RenderPresent(t->renderer);
-    return (true);
-}
-
 static bool create_sprites(t_data *t) {
-    t->n_spr = _n_spr;
+    t->n_spr = 3;
     t->spr = malloc(sizeof(t_sprite) * (t->n_spr + 1));
     if (!t->spr) {
         ft_puterror("Failed to allocate spr struct");
@@ -85,50 +74,11 @@ bool push_sprite_data(t_data *t, const char *path, int index) {
     return (true);
 }
 
-void draw_grid(t_data *t, bool update) {
-    int x = TILE_SIZE;
-    int y = TILE_SIZE;
-    if (!set_fontcolor(orange, t))
-        return ;
-    for (int i = 0; tmp_ctnr[i]; i++) {
-        for (int j = 0; j < strlen(tmp_ctnr[i]); j++) {
-            if (tmp_ctnr[i][j] == '1') {
-                SDL_Rect dst = { x - t->spr[1].srf->w/2, y - t->spr[1].srf->h/2, t->spr[1].srf->w, t->spr[1].srf->h };
-                SDL_RenderCopy(t->renderer, t->spr[1].txr, NULL, &dst);
-                x += TILE_SIZE;
-            }
-            else if (tmp_ctnr[i][j] == '0') {
-                SDL_Rect dst = { x - t->spr[0].srf->w/2, y - t->spr[0].srf->h/2, t->spr[0].srf->w, t->spr[0].srf->h };
-                SDL_RenderCopy(t->renderer, t->spr[0].txr, NULL, &dst);
-                x += TILE_SIZE;
-            }
-            else if (tmp_ctnr[i][j] == 'N') {
-                if (update) {
-                    SDL_Rect dst = { x - t->spr[0].srf->w/2, y - t->spr[0].srf->h/2, t->spr[0].srf->w, t->spr[0].srf->h };
-                    SDL_RenderCopy(t->renderer, t->spr[0].txr, NULL, &dst);
-                    x += TILE_SIZE;
-                }
-                else {
-                    SDL_Rect dst = { x - t->spr[2].srf->w/2, y - t->spr[2].srf->h/2, t->spr[2].srf->w, t->spr[2].srf->h };
-                    SDL_RenderCopy(t->renderer, t->spr[2].txr, NULL, &dst);
-                    t->player->x = x;
-                    t->player->y = y;
-                    x += TILE_SIZE;
-                }
-            }
-        }
-        x = TILE_SIZE;
-        y += TILE_SIZE;
-    }
-    if (update) {
-        SDL_Rect dst = { t->player->x - t->spr[2].srf->w/2, t->player->y - t->spr[2].srf->h/2, t->spr[2].srf->w, t->spr[2].srf->h };
-        SDL_RenderCopy(t->renderer, t->spr[2].txr, NULL, &dst);
-    }
-    SDL_RenderPresent(t->renderer);
-}
 
 bool start_sdl(t_data *t) {
     t->window = NULL;
+    t->width = 1280;
+    t->height = 880;
     if (!create_window(t))
         return (false);
     t->renderer = NULL;
@@ -136,13 +86,12 @@ bool start_sdl(t_data *t) {
         return (false);
     if (!create_sprites(t))
         return (false);
-    if (!set_fontcolor(orange, t))
-        return (false);
     t->player = malloc(sizeof(t_player) * 1);
 
     push_sprite_data(t, "wall_0.bmp", 0);
     push_sprite_data(t, "wall_1.bmp", 1);
     push_sprite_data(t, "player.bmp", 2);
+    push_sprite_data(t, "wall_ray.bmp", 3);
 
     draw_grid(t, false);
     return (true);

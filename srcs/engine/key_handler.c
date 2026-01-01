@@ -1,8 +1,7 @@
 #include "../../includes/header.h"
-#define PI 3.1415926535
 double pl_angle;
 double fov = 60;
-double nb_ray = 1000;
+double nb_ray = 300;
 double speed = 0.8;
 //https://www.youtube.com/watch?v=g8p7nAbDz6Y
 // TODO LOOKING DIRECTION
@@ -22,7 +21,7 @@ double get_collision(t_data *t, double i) {
     while (1) {
         t->player->px += dx;
         t->player->py += dy;
-        distance++;
+        distance += 1.0;
         int map_x = (t->player->px - t->spr[2].srf->w/2) / TILE_SIZE;
         int map_y = (t->player->py - t->spr[2].srf->h/2) / TILE_SIZE;
 
@@ -31,20 +30,34 @@ double get_collision(t_data *t, double i) {
         if (tmp_ctnr[map_y][map_x] == '1')
             break;
     }
-    return distance;
-} 
+    return (distance * cos(angle - pl_angle));
+}
 
 void draw_ray(t_data *t) {
-    double colone_width = 1280/nb_ray;
-    double distance = 0;
+    double colone_width = t->width/nb_ray;
+    double distance = 0.0;
+    double x = 0.0;
+    double high = 0.0;
+    double y_top = 0.0;
+    double y_bot = 0.0;
     for (double i = 0; i < nb_ray; i++) {
-        double x = i * colone_width;
+        x = i * colone_width;
         distance = get_collision(t, i);
-        double high = (TILE_SIZE * 880)/distance;
-        double y_top = (880 - high) / 2;
-        double y_bot = y_top + high;
-        SDL_SetRenderDrawColor(t->renderer, 0, 128, 0, 255);
-        SDL_RenderDrawLine(t->renderer, (int)x, (int)y_top, (int)x, (int)y_bot); 
+        high = (TILE_SIZE * t->height)/distance;
+        y_top = (t->height - high) / 2;
+        y_bot = y_top + high;
+
+        SDL_SetRenderDrawColor(t->renderer, 255, 51, 51, 255);
+        SDL_Rect dst = { (int)x, (int)y_top, 5, (int)y_bot - (int)y_top };
+        SDL_RenderFillRect(t->renderer, &dst);
+
+        SDL_SetRenderDrawColor(t->renderer, 0, 255, 255, 255);
+        SDL_Rect top = { (int)x, 0, 5, y_top};
+        SDL_RenderFillRect(t->renderer, &top);
+
+        SDL_SetRenderDrawColor(t->renderer, 102, 51, 0, 255);
+        SDL_Rect floor = { (int)x, y_bot, 5, t->height - y_bot};
+        SDL_RenderFillRect(t->renderer, &floor);
     }
 }
 

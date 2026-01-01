@@ -19,6 +19,8 @@
 #include <math.h>
 
 #define TILE_SIZE 16
+#define PI 3.1415926535
+
 
 extern char *tmp_ctnr[];
 
@@ -46,7 +48,11 @@ typedef struct s_map {
 typedef struct s_data {
     t_sprite        *spr;
     t_player        *player;
+    
     int             n_spr;
+    int             width;
+    int             height;
+
     SDL_Window      *window;
     SDL_Renderer    *renderer;
     SDL_Event       event;
@@ -59,5 +65,6 @@ bool start_sdl(t_data *t);
 void free_sdl(t_data *t);
 void handle_key_movement(t_data *t);
 void draw_grid(t_data *t, bool update);
+void update_loop(t_data *t);
 
 #endif
