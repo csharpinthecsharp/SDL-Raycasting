@@ -1,8 +1,9 @@
 #include "../../includes/header.h"
 double pl_angle;
 double fov = 60;
-double nb_ray = 1500;
+double nb_ray = 1300;
 double speed = 0.8;
+double texture_x;
 //https://www.youtube.com/watch?v=g8p7nAbDz6Y
 // TODO LOOKING DIRECTION
 
@@ -13,9 +14,12 @@ double get_collision(t_data *t, double i)
     double rayDirY;
     int mapX;
     int mapY;
+    double hitx;
+    double hity;
     double sideDistX;
     double sideDistY;
     double deltaDistX;
+    double dist;
     double deltaDistY;
     int stepX;
     int stepY;
@@ -65,15 +69,21 @@ double get_collision(t_data *t, double i)
             side = 1;
         }
 
-        if (tmp_ctnr[mapY][mapX] == '1')
+        if (tmp_ctnr[mapY][mapX] == '1') {
             hit = 1;
+        }
     }
 
-    double dist;
-    if (side == 0)
+    if (side == 0) {
         dist = sideDistX - deltaDistX;
-    else
+        hity = t->player->y + dist * rayDirY;
+        texture_x = (fmod(hity, TILE_SIZE) / TILE_SIZE) * 64;
+    } else {
         dist = sideDistY - deltaDistY;
+        hitx = t->player->x + dist * rayDirX;
+        texture_x = (fmod(hitx, TILE_SIZE) / TILE_SIZE) * 64;
+    }
+
 
     return dist * cos(angle - pl_angle);
 }
@@ -93,8 +103,9 @@ void draw_ray(t_data *t) {
         y_top = (t->height - high) / 2;
         y_bot = y_top + high;
 
-        SDL_SetRenderDrawColor(t->renderer, 96, 96, 96, 255);
-        SDL_RenderDrawLine(t->renderer, (int)x, (int)y_top, (int)x, (int)y_bot);
+        SDL_Rect src = { texture_x, 0, 1, 64};
+        SDL_Rect dst = { x , y_top, 1, y_bot - y_top };
+        SDL_RenderCopy(t->renderer, t->spr[3].txr, &src, &dst);
 
         SDL_SetRenderDrawColor(t->renderer, 0, 255, 255, 255);
         SDL_RenderDrawLine(t->renderer, (int)x, (int)0, (int)x, (int)y_top);
