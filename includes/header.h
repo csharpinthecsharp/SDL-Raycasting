@@ -1,8 +1,6 @@
 #ifndef HEADER_H
 #define HEADER_H
 
-#define _n_spr 3
-
 #include "../libft/libft.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
@@ -20,7 +18,7 @@
 
 #define TILE_SIZE 16
 #define PI 3.1415926535
-
+#define FOV 60
 
 extern char *tmp_ctnr[];
 
@@ -42,12 +40,31 @@ typedef struct s_player {
 typedef struct s_map {
     char **ctnr;
     int    len;
-
 } t_map; 
+
+typedef struct t_value {
+    double plAngle;
+    double speed;
+    double textureX;
+    double rayDirX;
+    double rayDirY;
+    double stepX;
+    double stepY;
+    double deltaX;
+    double deltaY;
+    double deltaDistX;
+    double deltaDistY;
+    double sideDistX;
+    double sideDistY;
+    double distance;
+    double rayNb;
+    int sl_txr;
+} t_value;
 
 typedef struct s_data {
     t_sprite        *spr;
     t_player        *player;
+    t_value         *v;
     
     int             n_spr;
     int             width;
@@ -60,11 +77,12 @@ typedef struct s_data {
 } t_data;
 
 void draw_ray(t_data *t);
-bool is_a_valid_file(const char *path);
 bool start_sdl(t_data *t);
 void free_sdl(t_data *t);
 void handle_key_movement(t_data *t);
-void draw_grid(t_data *t, bool update);
 void update_loop(t_data *t);
-
+void draw_wall(t_data *t, int tex_index, double x, double y_top, double y_bot);
+void draw_grid(t_data *t, bool update);
+void draw_ray(t_data *t);
+void get_collision(t_data *t, t_value *v, double i);
 #endif

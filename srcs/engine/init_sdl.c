@@ -4,15 +4,15 @@ char *tmp_ctnr[] = {
     "111111111111111111111",
     "100000000000000000001",
     "100N00000000000000001",
-    "100001000000001111001",
-    "100000000000000000001",
-    "100000011111001111101",
+    "122222220000002222001",
+    "100000020000000000001",
+    "100000022222002222201",
+    "100N00020000000020001",
+    "100N00020000000020001",
+    "100N00000000000020001",
+    "100N00000000022220001",
     "100N00000000000000001",
-    "100N00000000000000001",
-    "100N00000000000000001",
-    "100N00000000000000001",
-    "100N00000000000000001",
-    "100N00000000000000001",
+    "100N00002222200000001",
     "100N00000000000000001",
     "111111111111111111111",
     NULL
@@ -46,19 +46,12 @@ static bool create_renderer(t_data *t) {
 }
 
 static bool create_sprites(t_data *t) {
-    t->n_spr = 5;
+    t->n_spr = 6;
     t->spr = malloc(sizeof(t_sprite) * (t->n_spr + 1));
     if (!t->spr) {
         ft_puterror("Failed to allocate spr struct");
         return (false);
     }
-    /*SDL_Rect dst = { w_x/2 - t->spr[0].srf->w/2, w_y/2 - t->spr[0].srf->h/2, t->spr[0].srf->w, t->spr[0].srf->h };
-    SDL_RenderCopy(t->renderer, t->spr[0].txr, NULL, &dst);
-    SDL_RenderPresent(t->renderer);
-
-    SDL_Delay(3000);
-    SDL_DestroyTexture(t->spr[0].txr);
-    SDL_FreeSurface(t->spr[0].srf);*/
     return (true);
 }
 
@@ -74,11 +67,32 @@ bool push_sprite_data(t_data *t, const char *path, int index) {
     return (true);
 }
 
+void init_value(t_value *v) {
+    v->speed = 0.8;
+    v->plAngle = 0.0;
+    v->textureX = 0.0;
+    v->rayDirX = 0.0;
+    v->rayDirY = 0.0;
+    v->stepX = 0.0;
+    v->stepY = 0.0;
+    v->deltaX = 0.0;
+    v->deltaY = 0.0;
+    v->deltaDistX = 0.0;
+    v->deltaDistY = 0.0;
+    v->sideDistX = 0.0;
+    v->sideDistY = 0.0;
+    v->distance = 0.0;
+    v->rayNb = 1300;
+    v->sl_txr = 3;
+}
 
 bool start_sdl(t_data *t) {
     t->window = NULL;
     t->width = 1280;
     t->height = 880;
+    t->player = malloc(sizeof(t_player) * 1);
+    t->v = malloc(sizeof(t_value) * 1);
+    init_value(t->v);
     if (!create_window(t))
         return (false);
     t->renderer = NULL;
@@ -86,14 +100,14 @@ bool start_sdl(t_data *t) {
         return (false);
     if (!create_sprites(t))
         return (false);
-    t->player = malloc(sizeof(t_player) * 1);
 
     push_sprite_data(t, "wall_0.bmp", 0);
     push_sprite_data(t, "wall_1.bmp", 1);
     push_sprite_data(t, "player.bmp", 2);
-    push_sprite_data(t, "wall_ray.bmp", 3);
+    push_sprite_data(t, "wall_ray_0.bmp", 3);
     push_sprite_data(t, "weapon.bmp", 4);
     push_sprite_data(t, "cursor.bmp", 5);
+    push_sprite_data(t, "wall_ray_1.bmp", 6);
 
     draw_grid(t, false);
     return (true);

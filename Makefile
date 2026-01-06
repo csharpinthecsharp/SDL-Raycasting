@@ -7,6 +7,7 @@ SRCS	= srcs/main.c \
 		  srcs/engine/free.c \
 		  srcs/engine/key_handler.c \
 		  srcs/engine/engine_loop.c \
+		  srcs/engine/drawing.c \
 
 OBJS	= $(SRCS:.c=.o)
 LIBFT 	= libft/libft.a
